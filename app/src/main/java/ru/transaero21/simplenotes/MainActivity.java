@@ -28,13 +28,15 @@ public class MainActivity extends AppCompatActivity {
         noteLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
-                    if (result.getResultCode() == RESULT_OK) {
-                        Intent data = result.getData();
-                        if (data != null) {
-                            String fileName = data.getStringExtra(Constants.EXTRA_FILE_NAME);
+                    if (result.getResultCode() == RESULT_OK) { // Проверяем, был ли результат успешным
+                        Intent data = result.getData(); // Получаем Intent с данными из возвращенной активности
+                        if (data != null) { // Проверяем, что данные есть
+                            String fileName = data.getStringExtra(Constants.EXTRA_FILE_NAME); // Получаем имя файла из Intent
+
+                            // Проверяем, содержится ли имя файла в списке заметок
                             if (!noteList.contains(fileName)) {
-                                noteList.add(fileName);
-                                adapter.notifyDataSetChanged();
+                                noteList.add(fileName); // Если нет, добавляем его в список
+                                adapter.notifyDataSetChanged(); // Обновляем адаптер для отображения изменений в UI
                             }
                         }
                     }
@@ -44,16 +46,20 @@ public class MainActivity extends AppCompatActivity {
         noteList = loadNotes();
 
         ListView listView = findViewById(R.id.note_list);
-        adapter = new ArrayAdapter<>(this, R.layout.note_list_item, noteList);
-        listView.setAdapter(adapter);
 
+        // Создаем адаптер для ListView
+        adapter = new ArrayAdapter<>(this, R.layout.note_list_item, noteList);
+        listView.setAdapter(adapter); // Устанавливаем адаптер для ListView
+
+        // Устанавливаем действие нажатий на элемент списка
         listView.setOnItemClickListener((parent, view, position, id) -> {
             openNoteActivity(noteList.get(position));
         });
 
+        // Устанавливаем действие долгого нажатия на элемент списка
         listView.setOnItemLongClickListener((parent, view, position, id) -> {
-            deleteNode(position);
-            adapter.notifyDataSetChanged();
+            deleteNode(position); // Удаляем заметку по позиции
+            adapter.notifyDataSetChanged(); // Уведомляем адаптер об изменении данных, чтобы обновить отображение
             Toast.makeText(this, R.string.note_deleted, Toast.LENGTH_SHORT).show();
             return true;
         });
@@ -63,22 +69,24 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showFilenameInputDialog() {
+        // Создаём объект для построения диалогового окна
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
-        builder.setTitle(R.string.filename_input_dialog_title);
+        builder.setTitle(R.string.filename_input_dialog_title); // Устанавливаем заголовок диалогового окна
 
-        EditText input = new EditText(this);
-        builder.setView(input);
+        EditText input = new EditText(this); // Создаём EditText для ввода имени файла
+        builder.setView(input); // Устанавливаем EditText как содержимое диалогового окна
 
+        // Устанавливаем положительную кнопку для подтверждения ввода
         builder.setPositiveButton(R.string.filename_input_dialog_positive_button, (dialog, which) -> {
             String fileName = input.getText().toString().trim();
 
-            if (fileName.isEmpty()) {
+            if (fileName.isEmpty()) { // Проверяем, что имя файла не пустое
                 Toast.makeText(this, R.string.filename_input_dialog_empty_file, Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            if (noteList.contains(fileName)) {
+            if (noteList.contains(fileName)) { // Проверяем, существует ли уже файл с таким именем в списке заметок
                 Toast.makeText(this, R.string.filename_input_dialog_file_exists, Toast.LENGTH_SHORT).show();
                 return;
             }
@@ -86,11 +94,13 @@ public class MainActivity extends AppCompatActivity {
             openNoteActivity(fileName);
         });
 
+        // Устанавливаем отрицательную кнопку для отмены ввода
         builder.setNegativeButton(
                 R.string.filename_input_dialog_negative_button,
                 (dialog, which) -> dialog.cancel()
         );
 
+        // Показываем диалоговое окно пользователю
         builder.show();
     }
 
@@ -115,8 +125,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void openNoteActivity(String fileName) {
+        // Создаем новый Intent для перехода к NoteActivity
         Intent intent = new Intent(this, NoteActivity.class);
+        // Добавляем имя файла в качестве дополнительной информации к Intent
         intent.putExtra(Constants.EXTRA_FILE_NAME, fileName);
-        noteLauncher.launch(intent);
+        noteLauncher.launch(intent); // Запускаем NoteActivity
     }
 }
