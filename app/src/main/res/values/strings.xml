@@ -1,3 +1,17 @@
 <resources>
     <string name="app_name">SimpleNotes</string>
+
+    <string name="add_note_button">Add</string>
+    <string name="save_note_button">Save</string>
+    <string name="note_edit_text_hint">Enter note here</string>
+
+    <string name="note_deleted">Note deleted</string>
+
+    <string name="filename_input_dialog_title">Enter File Name</string>
+    <string name="filename_input_dialog_positive_button">OK</string>
+    <string name="filename_input_dialog_negative_button">Cancel</string>
+    <string name="filename_input_dialog_empty_file">Please enter a valid file name</string>
+    <string name="filename_input_dialog_file_exists">A note with this name already exists</string>
+
+    <string name="note_edit_text_empty">Note cannot be empty</string>
 </resources>
